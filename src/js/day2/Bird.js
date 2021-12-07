@@ -1,142 +1,128 @@
-import Graphics from "../utils/gfx/Graphics";
-import { Palette } from "./Palettes";
+import Graphics from "./Graphics";
+import Palette from "./Palette";
 import Patterns from "./Patterns";
 
-let g, w, h, size;
-let patterns, palette;
+let G, ctx, size, palette, pattern;
 export default class Bird {
   constructor() {
-    g = new Graphics();
-
-    w = window.innerWidth;
-    h = window.innerHeight;
-
-    let str = "9b5de5-f15bb5-fee440-00bbf9-00f5d4";
-    str = "335c67-fff3b0-e09f3e-9e2a2b-540b0e";
-    // str = "264653-2a9d8f-e9c46a-f4a261-e76f51";
-    // str = "f8ffe5-06d6a0-1b9aaa-ef476f-ffc43d";
-    // str = "011627-fdfffc-2ec4b6-e71d36-ff9f1c";
-    palette = Palette.fromString(str);
-
+    palette = Palette.fromString("264653-2a9d8f-e9c46a-f4a261-e76f51");
     size = 128;
-    patterns = new Patterns(size, size, palette.values);
+    pattern = new Patterns(palette, size, size);
+    pattern.head();
+
+    G = new Graphics();
+    // G.drawImage(pattern.canvas, 100, 200, 512, 512);
+
+    ctx = G.ctx;
 
     this.render();
   }
-
-  /**
- * the bird's shape
-  ┌────────┬──────────┐────┐
-  │        │ beak     |    │
-  │  head  ├──────────┘────┘
-  │        ├────?─────►
-  ├────────┼───────┐
-  │        │       │
-  │  body  │ body  │
-  │        │       │
-  ├────────┼───────┤
-  │        │       │
-  │  body  │ body  │
-  │        │       │
-  └───────┬┼───────┤
-          ││       │
-          ││       │
-          ││       │
-         ?││ tail  │
-          ││       │
-          ││       │
-          ││       │
-          ▼├───────┤
-           │       │
-           │       │
-           └───────┘
- */
-
-  randomizePattern(p) {
-    let col = 1 + ~~(Math.random() * 3);
-    let row = 1 + ~~(Math.random() * 3);
-    let r = ~~(Math.random() * 4);
-    if (r == 0) p.dots(col, row, Math.random() > 0.5);
-    if (r == 1) p.checker(col, row, Math.random() > 0.5);
-    if (r == 2) p.triangles(col, row);
-    if (r == 3) p.quarter(~~(Math.random() * 8), 3, false);
-  }
-
   render() {
-    setTimeout(this.render.bind(this), 2000);
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    ctx.clearRect(0, 0, w, h);
 
-    let ctx = g.ctx;
-
-    let bg = palette.asRGB()[0];
-    let b = 1.25;
-    g.fillStyle = `rgb( ${bg[0] * b},${bg[1] * b},${bg[2] * b} )`;
-
-    g.rect(0, 0, w, h);
+    //
+    ctx.filter = "brightness(.9)";
+    ctx.fillStyle = palette.nextColor(); //bg color
+    ctx.fillRect(0, 0, w, h);
+    ctx.filter = "brightness(1)";
 
     ctx.save();
-    ctx.translate(w / 2, h / 2);
-    g.fillStyle = "#000";
-    g.rect(-size * 2, -15, size * 4, 30);
+    ctx.translate(w / 2, h / 2); //recenter
 
-    //le corps est constitué de 4 motifs côte à côte
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = ctx.shadowOffsetY = 10;
 
-    for (let i = 0; i < 2; i++) {
-      for (let j = 0; j < 2; j++) {
-        this.randomizePattern(patterns);
+    let bw = 512; //branch
+    let bh = 20;
+    ctx.fillStyle = "#000";
+    ctx.fillRect(-bw / 2, size - bh / 2, bw, bh);
 
-        //les blocs bas gauche et haut droit sont arrondis
-        if (i == 1 && j == 0) patterns.quarter(6, 3, true);
-        if (i == 0 && j == 1) patterns.quarter(2, 3, true);
-
-        g.drawImage(patterns.canvas, (i - 1) * size, (j - 2) * size);
-      }
-    }
-
-    // la queue est faite de 2 blocs dont un à une longueur variable
-    let tailHeight = (1 + Math.random()) * size;
-    //le bloc de hauteur variable
-    patterns.triangles(4, 3);
-    g.drawImage(patterns.canvas, 0, 0, size, tailHeight);
-
-    patterns.quarter(2, 3, true);
-    g.drawImage(patterns.canvas, 0, tailHeight, size, size);
-
-    //la tête est un peu spéciale, on lui fait une fonction custom
-    this.head(-size, -3 * size);
+    this.body(palette);
+    this.head(palette);
+    this.tail(palette);
 
     ctx.restore();
   }
 
-  head(x, y) {
-    patterns.corner(0);
-    g.drawImage(patterns.canvas, x, y);
-    patterns.quarter(5, 1, true);
-    g.drawImage(patterns.canvas, x, y);
+  randomize(pattern) {
+    let rand = Math.floor(Math.random() * 3);
 
-    //l'oeil:
-    g.fillStyle = "#FFF";
-    g.disc(x + size * 0.75, y + size * 0.25, size / 8);
+    let col = 1 + ~~(Math.random() * 4);
+    let row = 1 + ~~(Math.random() * 4);
+    if (rand == 0) pattern.checker(col, row);
+    if (rand == 1) pattern.triangles(col, row);
 
-    g.fillStyle = palette.values[2];
-    g.disc(x + size * 0.75, y + size * 0.25, size / 10);
+    let corner = ~~(Math.random() * 4);
+    let count = 1 + ~~(Math.random() * 4);
+    if (rand == 2) pattern.quarter(corner, count);
 
-    g.fillStyle = "#222";
-    g.disc(x + size * 0.75, y + size * 0.25, size / 16);
+    return rand;
+  }
 
-    //le bec
+  tail(palette) {
+    let h = size * 0.5 + Math.random() * size * 2;
 
-    //le bout arrondi
-    let beakWidth = size * (Math.random() * 1.5 + 0.25);
-    let beakHeight = size * (Math.random() * 0.5 + 0.25);
-    patterns.corner(1);
-    g.drawImage(
-      patterns.canvas,
-      x + size + beakWidth - 2,
-      y,
-      beakHeight,
-      beakHeight
-    );
-    g.strokeStyle = g.fillStyle = patterns.ctx.fillStyle;
-    g.rect(x + size - 1, y, beakWidth, beakHeight);
+    let pattern = new Patterns(palette, size, h);
+
+    let col = 1 + ~~(Math.random() * 4);
+    let row = 1 + ~~(Math.random() * 4);
+    if (Math.random() > 0.5) {
+      pattern.checker(col, row);
+    } else {
+      pattern.triangles(col, row);
+    }
+    G.drawImage(pattern.canvas, 0, size, size, h);
+
+    let end = new Patterns(palette, size, size);
+    end.quarter(1, col);
+    G.drawImage(end.canvas, 0, size + h, size, size);
+  }
+
+  head(palette) {
+    let pattern = new Patterns(palette, size, size);
+    pattern.head();
+
+    G.drawImage(pattern.canvas, -size, -2 * size, size, size);
+
+    let w = size * Math.random();
+    let h = size * 0.25 + Math.random() * size * 0.5;
+
+    ctx.fillStyle = palette.nextColor();
+    ctx.fillRect(0, -2 * size, w, h);
+
+    ctx.beginPath();
+    ctx.arc(w, -2 * size + h, h, 0, -Math.PI / 2, true);
+    ctx.lineTo(w, -2 * size + h);
+    ctx.fill();
+  }
+
+  body(palette) {
+    for (let i = -1; i <= 0; i++) {
+      for (let j = -1; j <= 0; j++) {
+        let pattern = new Patterns(palette, size, size);
+
+        let rand = this.randomize(pattern);
+
+        let fcName = ["checker", "triangles", "quarter"];
+
+        if ((i == 0) & (j == -1)) {
+          let drawingFunction = pattern[fcName[rand]].bind(pattern);
+          pattern.mask(3, drawingFunction, 3, 3);
+        }
+
+        if ((i == -1) & (j == 0)) {
+          let drawingFunction = pattern[fcName[rand]].bind(pattern);
+          pattern.mask(1, drawingFunction, 3, 3);
+        }
+
+        G.drawImage(pattern.canvas, i * size, j * size, size, size);
+      }
+    }
   }
 }
+// */
+// import BirdPatterns from "./js/cheatsheet/BirdPatterns";
+// new BirdPatterns();

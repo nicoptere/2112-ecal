@@ -7,11 +7,14 @@ export class Palette {
   }
   static fromString(str) {
     let values = str
-      .toUpperCase()
-      .replace(/[^0-9A-F]/gm, "|")
+      .replace(/[^0-9A-F]/gim, "|")
       .split("|")
       .map((v) => "#" + v);
     return new Palette(values);
+  }
+  nextColour() {
+    this.values.push(this.values.shift());
+    return this.values[0];
   }
   split(str) {
     let e = str.replace("#", "").split("");
