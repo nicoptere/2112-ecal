@@ -1,18 +1,18 @@
 export const CONFIG = {
   sphereDetail: 2,
   radius: 15,
-  turns: 2,
+  turns: 1,
   count: 80,
   speed: 0,
   axialSpeed: -0.5,
   section: { width: 3, height: 3, countPerSide: 4 },
   size: { default: 1, min: 1, max: 1 },
-  hollow: true,
+  hollow: false,
 
   //row = le numéro de la 'section'
   //uid = l'identifiant unique d'une bille
   //retourne: array.push(R, G, B);
-  color: false,
+  color: true,
   colorRule: (row, uid, array) => {
     let grey = 0.85;
     if (uid % 4 == 0) {

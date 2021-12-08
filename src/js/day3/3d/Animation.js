@@ -1,6 +1,6 @@
+import Bird3D from "./bird/Bird3D";
 import Stage from "./scene/Stage";
-import Scene from "./scene/Scene";
-let stage, scene;
+let stage, bird;
 export default class Animation {
   constructor() {
     let w = window.innerWidth;
@@ -9,7 +9,7 @@ export default class Animation {
     stage = new Stage(w, h);
     document.body.appendChild(stage.domElement);
 
-    scene = new Scene(stage);
+    bird = new Bird3D(stage);
   }
 
   resize() {
@@ -28,7 +28,7 @@ export default class Animation {
 
   update() {
     this.raf = requestAnimationFrame(this.update.bind(this));
-    if (scene) scene.update();
+    if (bird) bird.update();
     stage.render();
   }
 }

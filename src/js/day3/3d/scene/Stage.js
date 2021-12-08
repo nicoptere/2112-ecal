@@ -13,13 +13,14 @@ let size = new Vector2();
 export default class Stage {
   constructor(w, h) {
     sce = new Scene();
-    cam = new PerspectiveCamera(60, w / h, 0.001, 10000);
+    cam = new PerspectiveCamera(50, w / h, 0.1, 100);
 
     ren = new WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
-    ren.setClearColor(new Color(1, 1, 1));
+    ren.setClearColor(new Color(0, 0, 0));
+
     cc = new OrbitControls(cam, ren.domElement);
     cc.enabled = true;
-    cam.position.z = -50;
+    cam.position.z = 50;
     cam.lookAt(zero);
 
     this.domElement = ren.domElement;
@@ -33,12 +34,15 @@ export default class Stage {
     window.camera = cam;
     window.target = cc.target;
   }
-
+  setClearColor(color) {
+    ren.setClearColor(new Color(color));
+  }
   resize(w, h) {
     ren.setSize(w, h);
     size.x = w;
     size.y = h;
     ren.setPixelRatio(window.devicePixelRatio);
+
     cam.aspect = w / h;
     cam.updateProjectionMatrix();
   }
@@ -54,11 +58,5 @@ export default class Stage {
 
   static add(obj) {
     sce.add(obj);
-  }
-  get size() {
-    return size;
-  }
-  static get size() {
-    return size;
   }
 }
