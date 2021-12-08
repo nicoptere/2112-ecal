@@ -10,7 +10,6 @@ export default class Animation {
     document.body.appendChild(stage.domElement);
 
     scene = new Scene(stage);
-    console.log(vs);
   }
 
   resize() {
