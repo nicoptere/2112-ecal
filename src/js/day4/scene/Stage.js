@@ -20,7 +20,7 @@ export default class Stage {
 
     cc = new OrbitControls(cam, ren.domElement);
     cc.enabled = true;
-    cam.position.z = 5;
+    cam.position.z = 10;
     cam.lookAt(zero);
 
     this.domElement = ren.domElement;
@@ -37,6 +37,7 @@ export default class Stage {
   setClearColor(color) {
     ren.setClearColor(new Color(color));
   }
+
   resize(w, h) {
     ren.setSize(w, h);
     size.x = w;

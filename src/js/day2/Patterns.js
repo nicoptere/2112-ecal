@@ -67,9 +67,12 @@ export default class Patterns {
     }
   }
 
-  quarter(corner = 0, count = 1) {
-    this.ctx.fillStyle = this.palette.nextColor();
-    this.ctx.fillRect(0, 0, this.w, this.h);
+  quarter(corner = 0, count = 1, alpha = false) {
+    if (alpha === false) {
+      this.ctx.fillStyle = this.palette.nextColor();
+      this.ctx.fillRect(0, 0, this.w, this.h);
+    }
+
     let p = this.corners[corner % this.corners.length];
     let r = this.w;
     let sr = r / count;

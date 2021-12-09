@@ -1,7 +1,9 @@
 import "./css/main.css";
-// import Bird from "./js/day2/Bird";
-// new Bird();
 
-import Animation from "./js/day3/3d/Animation";
+import Animation from "./js/day4/Animation";
 let anim = new Animation();
 anim.start();
+
+window.addEventListener("pointerdown", () => {
+  anim.reveal();
+});

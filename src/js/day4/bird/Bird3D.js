@@ -1,4 +1,3 @@
-import Bird from "../../../day2/Bird";
 import {
   BoxBufferGeometry,
   CylinderBufferGeometry,
@@ -6,13 +5,14 @@ import {
   MeshBasicMaterial,
   Object3D,
 } from "three";
-import Palette from "../../../day2/Palette";
-import Patterns from "../../../day2/Patterns";
+import Palette from "../../day2/Palette";
+import Patterns from "../../day2/Patterns";
 import Pattern3D from "./Pattern3D";
 let palette, pattern, size;
 
 let RAD = Math.PI / 180;
 let depth = 0.1;
+
 export default class Bird3D extends Object3D {
   constructor(stage) {
     super();
@@ -20,23 +20,17 @@ export default class Bird3D extends Object3D {
 
     palette = Palette.fromString("264653-2a9d8f-e9c46a-f4a261-e76f51");
     size = 128;
-
     pattern = new Patterns(palette, size, size);
-    pattern.triangles(3, 2);
 
-    //coloeur de fond
+    //couleur de fond
     // stage.setClearColor(palette.nextColor());
 
     this.patterns = [];
-
-    // let p3 = new Pattern3D(pattern, palette);
-    // this.add(p3);
-    // this.patterns.push(p3);
-
-    this.reset();
     this.reset();
   }
+
   reset() {
+    console.log("reset");
     //clear the scene
     while (this.children.length > 0) {
       this.remove(this.children[0]);
@@ -105,8 +99,10 @@ export default class Bird3D extends Object3D {
     let w = Math.random();
     let h = 0.25 + Math.random() * 0.5;
 
+    // TODO nester le bec
+
     let color = palette.nextColor();
-    let material = new MeshBasicMaterial({ color: color });
+    let material = new MeshBasicMaterial({ transparent: true, color: color });
     let box = new BoxBufferGeometry();
     let m = new Mesh(box, material);
     this.add(m);
@@ -116,9 +112,6 @@ export default class Bird3D extends Object3D {
     m.position.x = w / 2 - 0.5;
     m.position.y = 2.5 - h / 2;
     m.position.z = -depth / 2;
-
-    // ctx.fillStyle = palette.nextColor();
-    // ctx.fillRect(0, -2 * size, w, h);
 
     let cyl = new CylinderBufferGeometry(
       h,
@@ -136,11 +129,6 @@ export default class Bird3D extends Object3D {
     b.position.x = w - 0.5;
     b.position.y = 2.5 - h;
     b.position.z = -depth / 2;
-
-    // ctx.beginPath();
-    // ctx.arc(w, -2 * size + h, h, 0, -Math.PI / 2, true);
-    // ctx.lineTo(w, -2 * size + h);
-    // ctx.fill();
   }
 
   body(palette) {
@@ -174,12 +162,8 @@ export default class Bird3D extends Object3D {
   }
 
   update() {
-    let t = performance.now() * 0.001;
-    // this.rotation.y += RAD * 2;
-
     this.patterns.forEach((p) => {
       p.scale.z = depth;
-
       p.update();
     });
   }

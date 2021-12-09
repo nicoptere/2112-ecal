@@ -27,6 +27,7 @@
     "webpack-dev-server": "^3.10.3",
     "webpack-merge": "^4.2.2",
     "three": "0.120.0",
+    "gsap": "3.8.0",
     "alea": "1.0.0"
   },
   "dependencies": {
