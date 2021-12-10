@@ -7,6 +7,7 @@ import {
 } from "three";
 import Palette from "../../day2/Palette";
 import Patterns from "../../day2/Patterns";
+import BackgroundColor from "../utils/BackgroundColor";
 import Pattern3D from "./Pattern3D";
 let palette, pattern, size;
 
@@ -36,7 +37,8 @@ export default class Animal3D extends Object3D {
     this.patterns = [];
 
     //couleur de fond
-    this.stage.setClearColor(palette.nextColor());
+    // this.stage.setClearColor(palette.nextColor());
+    BackgroundColor.changeColor(palette.nextColor(), 2);
 
     //régénérer l'oiseau
     this.body(palette);

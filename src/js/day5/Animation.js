@@ -2,6 +2,7 @@ import Bird3D from "./bird/Bird3D";
 import Animal3D from "./bird/Animal3D";
 import Stage from "./scene/Stage";
 import Animator from "./utils/Animator";
+import BackgroundColor from "./utils/BackgroundColor";
 let stage, bird, animal;
 let locked = false;
 export default class Animation {
@@ -11,6 +12,8 @@ export default class Animation {
 
     stage = new Stage(w, h);
     document.body.appendChild(stage.domElement);
+
+    new BackgroundColor(stage);
 
     bird = new Bird3D(stage);
     bird.visible = false;
