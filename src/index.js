@@ -7,3 +7,7 @@ anim.start();
 window.addEventListener("keydown", () => {
   anim.reveal();
 });
+
+window.addEventListener("resize", () => {
+  anim.resize();
+});
