@@ -4,6 +4,6 @@ import Animation from "./js/day4/Animation";
 let anim = new Animation();
 anim.start();
 
-window.addEventListener("pointerdown", () => {
+window.addEventListener("keydown", () => {
   anim.reveal();
 });
