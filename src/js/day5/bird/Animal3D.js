@@ -13,7 +13,7 @@ let palette, pattern, size;
 let RAD = Math.PI / 180;
 let depth = 0.1;
 
-export default class Bird3D extends Object3D {
+export default class Animal3D extends Object3D {
   constructor(stage) {
     super();
     stage.add(this);
@@ -28,7 +28,7 @@ export default class Bird3D extends Object3D {
   }
 
   reset() {
-    console.log("reset bird");
+    console.log("reset animal");
     //clear the scene
     while (this.children.length > 0) {
       this.remove(this.children[0]);
@@ -40,8 +40,8 @@ export default class Bird3D extends Object3D {
 
     //régénérer l'oiseau
     this.body(palette);
-    this.head(palette);
-    this.tail(palette);
+    // this.head(palette);
+    // this.tail(palette);
   }
 
   randomize(pattern) {
